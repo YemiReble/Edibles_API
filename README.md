@@ -1,8 +1,9 @@
 # Edible API Documentation
 
-- [x] [GET] /price/product
-- [x] [GET] /price/product/{id}
-- [x] [POST] /prodduct-data/
+- [x] [GET]
+- [x] [POST]
+- [x] [PUT]
+- [x] [DELETE]
 
 ## Food
 Json Sample:
