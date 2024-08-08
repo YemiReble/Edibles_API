@@ -35,3 +35,35 @@ class CreateUserSerializer(serializers.ModelSerializer):
             "access_token": token.get("access"),
             "refresh_token": token.get("refresh"),
         }
+
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
+
+    def validate(self, data):
+        email = data.get("email")
+        password = data.get("password")
+        user = authenticate(email=email, password=password)
+        if not user:
+            raise AuthenticationFailed("Invalid credentials, try again")
+        if not user.is_active:
+            raise AuthenticationFailed("Account disabled, contact admin")
+        return {
+            "email": user.email,
+            "access_token": user.tokens()["access"],
+            "refresh_token": user.tokens()["refresh"],
+        }
+
+
+class SubscriptionPlanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SubscriptionPlan
+        fields = '__all__'
+
+class SubscriptionSerializer(serializers.ModelSerializer):
+    plan_name = serializers.CharField(source='plan.name', read_only=True)
+    class Meta:
+        model = Subscription
+        fields = ('id', 'user', 'plan_name', 'start_date', 'end_date', 'active')
+

@@ -49,3 +49,19 @@ class OneTimePassword(models.Model):
 
     def __str__(self):
         return f"{self.token}"
+
+
+class SubscriptionPlan(models.Model):
+    id = models.UUIDField(default=uuid4, primary_key=True, editable=False)
+    name = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    description = models.TextField()
+
+class Subscription(models.Model):
+    id = models.UUIDField(default=uuid4, primary_key=True, editable=False)
+    user = models.ForeignKey(Account, on_delete=models.CASCADE)
+    plan = models.ForeignKey(SubscriptionPlan, on_delete=models.CASCADE)
+    start_date = models.DateField(auto_now_add=True)
+    end_date = models.DateField()
+    active = models.BooleanField(default=True)
+    # Additional fields like status (active, cancelled), etc.
